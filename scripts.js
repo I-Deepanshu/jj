@@ -1,81 +1,77 @@
-// Array to hold cart items
-let cart = [];
+// Add product to cart
+function addToCart(productName, productPrice) {
+    // Convert productPrice to a number in case it's passed as a string
+    productPrice = parseFloat(productPrice);
 
-// Function to add item to cart
-function addToCart(name, price) {
-    // Create a cart item object
-    const cartItem = {
-        name: name,
-        price: price
-    };
+    // Get the cart from local storage or initialize an empty array
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    // Add item to cart array
-    cart.push(cartItem);
+    // Add the product to the cart
+    cart.push({ name: productName, price: productPrice });
 
-    // Save cart to localStorage
+    // Save the updated cart back to local storage
     localStorage.setItem('cart', JSON.stringify(cart));
 
-    // Alert the user
-    alert(`${name} has been added to your cart.`);
+    // Update the cart total
+    updateCartTotal();
 
-    // Update cart count (optional)
-    updateCartCount();
+    // Notify user that the product has been added to the cart (optional)
+    alert(`${productName} has been added to your cart.`);
 }
 
-// Function to update cart count
-function updateCartCount() {
-    const cartCount = cart.length;
-    document.querySelector('.cart-icon').setAttribute('data-count', cartCount);
-}
+// Update the cart total on the cart page
+function updateCartTotal() {
+    // Get the cart from local storage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-// Function to load cart from localStorage
-function loadCart() {
-    // Get cart from localStorage
-    const storedCart = localStorage.getItem('cart');
+    // Calculate the total price
+    let total = cart.reduce((sum, product) => sum + product.price, 0);
 
-    if (storedCart) {
-        cart = JSON.parse(storedCart);
-    }
+    // Update the total on the page
+    document.getElementById('cart-total').textContent = '$' + total.toFixed(2);
 
-    // Display cart items
+    // Update the cart items display
     displayCartItems();
 }
 
-// Function to display cart items in the cart page
+// Display cart items on the cart page
 function displayCartItems() {
-    const cartItemsContainer = document.getElementById('cart-items');
-    const totalAmountElement = document.getElementById('total-amount');
-    let totalAmount = 0;
+    // Get the cart from local storage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    // Clear the current items
+    // Get the cart items container
+    let cartItemsContainer = document.getElementById('cart-items');
+
+    // Clear any existing items
     cartItemsContainer.innerHTML = '';
 
-    // Add each item to the cart display
-    cart.forEach(item => {
-        const itemElement = document.createElement('div');
+    // Loop through each item in the cart and display it
+    cart.forEach((product, index) => {
+        let itemElement = document.createElement('div');
         itemElement.className = 'cart-item';
         itemElement.innerHTML = `
-            <p>${item.name}</p>
-            <p>$${item.price}</p>
+            <span>${product.name}</span>
+            <span>$${product.price.toFixed(2)}</span>
+            <button onclick="removeFromCart(${index})">Remove</button>
         `;
         cartItemsContainer.appendChild(itemElement);
-
-        // Add to total amount
-        totalAmount += item.price;
     });
-
-    // Update total amount
-    totalAmountElement.innerText = totalAmount.toFixed(2);
 }
 
-// Function for checkout (just a placeholder)
-function checkout() {
-    alert('Proceeding to checkout...');
-    // Implement checkout logic here
+// Remove a product from the cart
+function removeFromCart(index) {
+    // Get the cart from local storage
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Remove the item at the given index
+    cart.splice(index, 1);
+
+    // Save the updated cart back to local storage
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Update the cart total
+    updateCartTotal();
 }
 
-// Load cart on page load
-window.onload = function() {
-    loadCart();
-    updateCartCount();
-}
+// Call this function when the cart page loads to initialize the cart display and total
+document.addEventListener('DOMContentLoaded', updateCartTotal);

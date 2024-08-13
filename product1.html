@@ -36,7 +36,15 @@
                     <p class="price">$99.99</p>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
                     <!-- Add to Cart Button -->
-                    <button class="btn" onclick="addToCart('Designer Saree', 99.99)">Add to Cart</button>
+                    <button class="btn" id="add-to-cart-btn" onclick="addToCart('Designer Saree', 99.99)">Add to Cart</button>
+                </div>
+                
+                <!-- Modal Popup -->
+                <div id="cart-modal" class="cart-modal">
+                    <div class="cart-modal-content">
+                        <span id="close-modal" class="close">&times;</span>
+                        <p id="modal-text">Item added to cart!</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,6 +64,29 @@
     </footer>
 
     <!-- Include your JavaScript here -->
-    <script src="scripts.js"></script>
+    <script>
+        function addToCart(productName, price) {
+            // Simulate adding to cart (you can expand this function as needed)
+            console.log(`Added ${productName} to cart for $${price}`);
+
+            // Show the modal
+            var modal = document.getElementById('cart-modal');
+            var closeModal = document.getElementById('close-modal');
+
+            modal.style.display = 'block';
+
+            // Close the modal when the user clicks the 'X'
+            closeModal.onclick = function() {
+                modal.style.display = 'none';
+            };
+
+            // Close the modal when the user clicks outside the modal content
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        }
+    </script>
 </body>
 </html>
